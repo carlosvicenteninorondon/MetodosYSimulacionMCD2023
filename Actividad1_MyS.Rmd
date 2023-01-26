@@ -1,0 +1,187 @@
+---
+title: "Actividad 1 Métodos y Simulación Carrera Luz"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      bg: "#F4F6F7"
+      fg: "#000000" 
+      primary: "#F64924"
+      base_font:
+        google: Prompt
+      code_font:
+        google: JetBrains Mono
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(paqueteMET)
+data("CarreraLuz22")
+
+
+
+#valueBox(variablevalor,icono)
+
+
+
+
+
+#barplot(prop.table(table(CarreraLuz22$edad,ylim = c(0, 40))))
+#plot(x = CarreraLuz22$sex)
+
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+```
+
+Column {data-width=150}
+-------------------------------------
+### Datos relevantes de la competencia {data-orientation=rows}
+### participantes
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+valueBox(nrow(CarreraLuz22), caption = "Número total de participantes")
+```
+### edadjoven
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+### edadjoven
+valueBox(min(edad), caption = "Edad del competidor mas joven")
+```
+### edadviejo
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+
+
+valueBox(max(edad), caption = "Edad del competidor más longevo")
+```
+### edadpromedio
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+x<-mean(edad)
+valueBox(trunc(x), caption = "Edad promedio de competidores")
+```
+
+### record
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+valueBox(min(timerun), caption = "Tiempo record en segundos")
+```
+   
+Column {data-width=200}
+-------------------------------------
+   
+### Relación de participantes según la categoría
+```{r}
+library(paqueteMET)
+library(RColorBrewer)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+mi_tabla <- table(categoria)
+
+#mi_tabla
+# Participación por sexo
+#pie(mi_tabla)
+barplot(mi_tabla,  ylim = c(0, 1300),main="Categoria de los participantes", xlab="categoria", ylab ="Cantidad",las=2, col=brewer.pal(n = 5, name = "RdBu"),legend.text=c("Juvenil","Abierta","Veteranos A", "Veteranos B", "Veteranos C"),xaxt = "n")
+library(flexdashboard)
+```
+Column {data-width=200}
+------------------------------------- 
+
+### Desempeño por edades
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+categoria<-CarreraLuz22[,3]
+categoria<-unlist(categoria)
+timerun<-CarreraLuz22[, 5]
+timerun<-unlist(timerun)
+plot(categoria,timerun,col = "black",main="Relación Edad-Tiempo de carrera")
+```
+
+
+Column {data-width=250}
+------------------------------------- 
+
+### Clasificacion por sexo
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+mi_tabla <- table(sex)
+
+#mi_tabla
+# Participación por sexo
+barplot(mi_tabla,  ylim = c(0, 1300),
+        col=c("blue","pink") )
+library(flexdashboard)
+
+
+
+```
+Column {data-width=250}
+------------------------------------- 
+
+### Tiempo de carrera
+```{r}
+library(paqueteMET)
+data("CarreraLuz22")
+attach(CarreraLuz22)
+library(ggplot2)
+qplot(categoria, timerun, data=CarreraLuz22, geom=c("boxplot", "jitter"),xlab="Categoria",ylab = "Tiempo")+ 
+  geom_point() + 
+  theme(plot.background = element_rect(fill = "#F4F6F7"),panel.background=element_rect(fill="#F4F6F7"))
+```
+
+Column {data-width=250}
+------------------------------------- 
+
+### Desempeño hombres por categoria abierta
+```{r}
+datasethombresabierta=subset(CarreraLuz22, (CarreraLuz22$sex=="Hombre" & CarreraLuz22$categoria=="2. Abierta"))
+x=datasethombresabierta$timerun
+hist(x, xlim=c(min(datasethombresabierta$timerun),max(datasethombresabierta$timerun)),
+main = "Desempeño de los hombres en la categoria abierta",
+xlab="tiempo",
+ylab = "",
+col ="#7FFFD4")
+# Nuevo gráfico
+par(new = TRUE)
+# Box plot
+boxplot(x, horizontal = TRUE, axes = FALSE,
+        col = rgb(0.93, 0.42, 0.31, alpha = 0.8))
+# Caja
+box()
+```
+Column {data-width=250}
+------------------------------------- 
+
+### Desempeño mujeres por categoria abierta
+```{r}
+datasetmujeresabierta=subset(CarreraLuz22, (CarreraLuz22$sex=="Mujer" & CarreraLuz22$categoria=="2. Abierta"))
+x=datasetmujeresabierta$timerun
+hist(x, xlim=c(min(datasetmujeresabierta$timerun),max(datasetmujeresabierta$timerun)),
+main = "Desempeño de las mujeres en la categoria abierta",
+xlab="tiempo",
+ylab = "",
+col ="#7FFFD4")
+# Nuevo gráfico
+par(new = TRUE)
+# Box plot
+boxplot(x, horizontal = TRUE, axes = FALSE,
+        col = rgb(0.93, 0.42, 0.31, alpha = 0.8))
+# Caja
+box()
+```
+
